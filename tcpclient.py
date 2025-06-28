@@ -24,9 +24,9 @@ def main():
         my_ip, my_port = input("請輸入自己的 ip:port: ").strip().split(":")
         my_port = int(my_port)
         # ---------- Server 角色 ----------
-        srv_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        srv_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #TCP socket
         srv_sock.bind((my_ip, my_port))
-        srv_sock.listen(1)
+        srv_sock.listen(1)      #啟動監聽，最多允許一個連線（你也可以改成 listen(5)）
         print(f"[等待連線] {my_ip}:{my_port} ...")
         conn, addr = srv_sock.accept()
         print(f"[已連線] 對方位址: {addr}")
