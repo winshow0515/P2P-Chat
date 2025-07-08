@@ -3,7 +3,7 @@ import threading
 import json
 import time
 
-# 在線名單 name: (socket, (ip, port))
+# 在線名單 name: ((ip, port), isChatting)
 clients = {}
 
 # 接收client來的指令並處理
@@ -16,22 +16,46 @@ def receive_messages(sock):
                 break
             msg = json.loads(data.decode())
             print(msg)
-            if msg['type'] == "register":
-                # 新客戶端連線，記錄下來，假設用戶名不重複
+
+            if msg['type'] == "register":# 新客戶端連線，記錄下來，假設用戶名不重複
                 name = msg["name"]
-                clients[name] = (sock, addr)
+                clients[name] = (addr, False)  # ((ip, port), isChatting)
                 print(f"[{name}] 已連線，IP: {addr[0]}, Port: {addr[1]}")
-                sock.sendto(json.dumps({'type': "register", 'response': "Hi 這裡是 server."}, ensure_ascii=False).encode("utf-8"), addr)
-            
+                sock.sendto(json.dumps({'type': "register", 'response': "Hi 這裡是 server."}).encode("utf-8"), addr)
+                print(f"[在線客戶端列表] {clients}")
             elif msg['type'] == "list":
-                online_list = "\n".join(f"{n}: {clients[n][1]}" for n in clients.keys())
-                sock.sendto(json.dumps({"type": "list", "clients": online_list}).encode(), addr)
+                sock.sendto(json.dumps({"type": "list", "clients": clients}).encode("utf-8"), addr)
                 
             elif msg['type'] == "logout":
                 del clients[msg["name"]]
                 print(f"[{msg['name']}] 已離線")
-            elif msg['type'] == "chat":
-                pass
+            
+            elif msg['type'] == "chat":# 轉達聊天邀請，TODO:對方是否在和其他人聊天
+                target_name = msg['target']
+                if target_name not in clients:
+                    sock.sendto(json.dumps({"type": "chat_response", "response": f"[錯誤] 客戶端 {target_name} 不在線上"}).encode("utf-8"), addr)
+                    print(f"[錯誤] 客戶端 {target_name} 不在線上")
+                    continue
+                if clients[target_name][1]:  # 如果對方正在聊天
+                    sock.sendto(json.dumps({"type": "chat_response", "response": f"[錯誤] 客戶端 {target_name} 正在跟別人聊天中"}).encode("utf-8"), addr)
+                    print(f"[錯誤] 客戶端 {target_name} 正在聊天中")
+                    continue
+                #轉達聊天邀請
+                target_addr = clients[target_name][0]  # (ip, port)
+                response_msg = {
+                    "type": "chat",
+                    "name": msg["name"],
+                    "addr" : addr
+                }
+                print(response_msg)
+                sock.sendto(json.dumps(response_msg).encode("utf-8"), target_addr)
+            
+            elif msg['type'] == "isChating":# 更新聊天狀態
+                name = msg["name"]
+                is_chatting = msg["status"]
+                if name in clients:
+                    clients[name] = (clients[name][0], is_chatting)
+                
 
         except ConnectionError:
             break
