@@ -30,7 +30,7 @@ def receive_messages(sock):
                 del clients[msg["name"]]
                 print(f"[{msg['name']}] 已離線")
             
-            elif msg['type'] == "chat":# 轉達聊天邀請，TODO:對方是否在和其他人聊天
+            elif msg['type'] == "chat":# 轉達聊天邀請
                 target_name = msg['target']
                 if target_name not in clients:
                     sock.sendto(json.dumps({"type": "chat_response", "response": f"[錯誤] 客戶端 {target_name} 不在線上"}).encode("utf-8"), addr)
@@ -64,10 +64,10 @@ def receive_messages(sock):
 
 #初始化
 server_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-ser_ip = "0.0.0.0"
+ser_ip = "192.168.0.229"
 ser_port = 8888
 server_sock.bind((ser_ip, ser_port))
-print(f"[Server 啟動中] 0.0.0.0 : 8888 等待連接")
+print(f"[Server 啟動中] 192.168.0.229 : 8888 等待連接")
 
 threading.Thread(target=receive_messages, args=(server_sock,), daemon=True).start()
 while True:

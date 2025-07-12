@@ -5,7 +5,7 @@ import time
 
 # 接收訊息(server端或client端)
 def receive_messages(sock):
-    global mode, peer_addr
+    global mode, peer_addr,SERVER_ADDR
     while True:
         try:
             data, addr = sock.recvfrom(1024)
@@ -18,7 +18,7 @@ def receive_messages(sock):
                 print(f"[無法解析 JSON] 收到：{data}")
                 continue
             
-            if addr == ("127.0.0.1", 8888): #處理來自server的訊息
+            if addr == SERVER_ADDR: #處理來自server的訊息
                 if msg['type'] == "register":
                     print(msg['response'])
                     mode = "server" #回到server模式
@@ -136,7 +136,7 @@ my_name = input("請輸入自己的名稱: ").strip()
 cli_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 cli_sock.bind((my_ip, my_port))
 
-SERVER_ADDR = ("127.0.0.1", 8888)
+SERVER_ADDR = ("192.168.0.229", 8888)
 
 #"server", "waiting_response", "responding", "chatting"
 mode = "server" #預設對象為server
