@@ -5,7 +5,12 @@ import time
 
 # 在線名單 name: ((ip, port), isChatting)
 clients = {}
-
+fmt = "\n| {: ^10s} | {: ^10s} |"
+'''
+|    name    | isChatting |
+| ---------- | ---------- |
+| .......... | .......... |
+'''
 # 接收client來的指令並處理
 def receive_messages(sock):
     while True:
@@ -23,8 +28,12 @@ def receive_messages(sock):
                 print(f"[{name}] 已連線，IP: {addr[0]}, Port: {addr[1]}")
                 sock.sendto(json.dumps({'type': "register", 'response': "Hi 這裡是 server."}).encode("utf-8"), addr)
                 print(f"[在線客戶端列表] {clients}")
+
             elif msg['type'] == "list":
-                sock.sendto(json.dumps({"type": "list", "clients": clients}).encode("utf-8"), addr)
+                temp = fmt.format("name", "isChatting")+fmt.format("-"*10, "-"*10)
+                for i in clients:
+                    temp += fmt.format(i, str(clients[i][1]))
+                sock.sendto(json.dumps({"type": "list", "clients": temp}).encode("utf-8"), addr)
                 
             elif msg['type'] == "logout":
                 del clients[msg["name"]]
@@ -64,10 +73,10 @@ def receive_messages(sock):
 
 #初始化
 server_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-ser_ip = "192.168.0.229"
+ser_ip = "0.0.0.0"#"192.168.0.229"
 ser_port = 8888
 server_sock.bind((ser_ip, ser_port))
-print(f"[Server 啟動中] 192.168.0.229 : 8888 等待連接")
+print(f"[Server 啟動中] 0.0.0.0 : 8888 等待連接")
 
 threading.Thread(target=receive_messages, args=(server_sock,), daemon=True).start()
 while True:

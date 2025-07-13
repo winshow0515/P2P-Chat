@@ -82,7 +82,10 @@ def send_message(sock):
                 sock.sendto(json.dumps({"type": "logout", "name": my_name}).encode("utf-8"), SERVER_ADDR)
                 print("[結束通訊]")
                 break
-
+            
+            elif msg.strip().lower() == "help":
+                print("exit : 離開\nlist : 列出現在在線的名單\nchat name : 發出1v1聊天邀請，請將name換成對象的名字")
+                
             elif msg.strip().lower() == "list":# 請求在線列表
                 sock.sendto(json.dumps({"type": "list"}).encode("utf-8"), SERVER_ADDR)
                 
@@ -119,7 +122,6 @@ def send_message(sock):
                 print("已離開1v1聊天室，現在可以對server輸入指令了")
                 mode = "server"
                 sock.sendto(json.dumps({"type": "isChating", "status": False, "name": my_name}).encode("utf-8"), SERVER_ADDR)
-
             
             elif msg.strip():# 普通發送聊天訊息給對方
                 sock.sendto(json.dumps({"type": "chat", 
@@ -136,7 +138,7 @@ my_name = input("請輸入自己的名稱: ").strip()
 cli_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 cli_sock.bind((my_ip, my_port))
 
-SERVER_ADDR = ("192.168.0.229", 8888)
+SERVER_ADDR = ("192.168.0.239", 8888)
 
 #"server", "waiting_response", "responding", "chatting"
 mode = "server" #預設對象為server
