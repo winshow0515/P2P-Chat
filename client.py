@@ -74,8 +74,11 @@ def send_message(sock):
         if mode == "waiting_response":  #等待回應
             time.sleep(0.1)
             continue 
-
-        msg = input("> 請輸入訊息(或輸入 'exit' 離開): ")
+        if mode == "server":
+            print("> 請輸入指令(輸入'help' 取得幫助, 'exit' 離開): ")
+        elif mode == "chatting":
+            print("> 輸入訊息(或輸入 'exit' 離開): ")
+        msg = input()
 
         if mode == "server":    #向server發送指令
             if msg.strip().lower() == "exit":
@@ -117,6 +120,7 @@ def send_message(sock):
                 continue
         
         elif mode == "chatting": #在1v1聊天室中聊天
+            
             if msg.strip().lower() == "exit":
                 sock.sendto(json.dumps({"type": "logout", "name": my_name}).encode("utf-8"), peer_addr)
                 print("已離開1v1聊天室，現在可以對server輸入指令了")
@@ -137,8 +141,9 @@ my_port = int(input("請輸入自己的 Port: ").strip())
 my_name = input("請輸入自己的名稱: ").strip()
 cli_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 cli_sock.bind((my_ip, my_port))
-
-SERVER_ADDR = ("192.168.0.239", 8888)
+server_ip = input("請輸入server的IP: ")
+server_port = int(input("請輸入server的port: "))
+SERVER_ADDR = (server_ip, server_port)
 
 #"server", "waiting_response", "responding", "chatting"
 mode = "server" #預設對象為server

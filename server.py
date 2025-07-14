@@ -73,10 +73,10 @@ def receive_messages(sock):
 
 #初始化
 server_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-ser_ip = "0.0.0.0"#"192.168.0.229"
-ser_port = 8888
+ser_ip = input("請輸入你的IP: ")#"192.168.0.229"
+ser_port = int(input("請輸入你的port: "))
 server_sock.bind((ser_ip, ser_port))
-print(f"[Server 啟動中] 0.0.0.0 : 8888 等待連接")
+print(f"[Server 啟動中] {ser_ip} : {ser_port} 等待連接")
 
 threading.Thread(target=receive_messages, args=(server_sock,), daemon=True).start()
 while True:
