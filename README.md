@@ -26,9 +26,14 @@ python client.py
 
 自己的暱稱（例：Alice）
 
-常用指令（在 client 中輸入）
-list：查詢目前在線的使用者
+常用指令（在 client 中輸入） 
+* list：查詢目前在線的使用者
 ```
+> 請輸入指令(輸入'help' 取得幫助, 'exit' 離開): 
+list
+
+[在線客戶端列表]
+
 |    name    | isChatting |
 | ---------- | ---------- |
 |    Ariel   |    True    |
@@ -36,12 +41,12 @@ list：查詢目前在線的使用者
 |    ccc     |    False   |
 ```
 
-chat [名稱]：對指定使用者發送聊天邀請  
+* chat [名稱]：對指定使用者發送聊天邀請  
 ```
 chat Ariel
 ```
 
-exit：登出或離開聊天室
+* exit：登出或離開聊天室
 
 
 示範
