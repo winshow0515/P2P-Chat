@@ -6,11 +6,7 @@ import time
 # 在線名單 name: ((ip, port), isChatting)
 clients = {}
 fmt = "\n| {: ^10s} | {: ^10s} |"
-'''
-|    name    | isChatting |
-| ---------- | ---------- |
-| .......... | .......... |
-'''
+
 # 接收client來的指令並處理
 def receive_messages(sock):
     while True:

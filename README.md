@@ -28,17 +28,36 @@ python client.py
 
 常用指令（在 client 中輸入）
 list：查詢目前在線的使用者
+```
+|    name    | isChatting |
+| ---------- | ---------- |
+|    Ariel   |    True    |
+|    Bob     |    True    |
+|    ccc     |    False   |
+```
 
-chat [名稱]：對指定使用者發送聊天邀請
+chat [名稱]：對指定使用者發送聊天邀請  
+```
+chat Ariel
+```
 
 exit：登出或離開聊天室
 
 
 示範
 ===
-請放截圖
+右邊的client向左邊的client發起邀請，左邊的client答應了
+![client1](./Images/client1.png)
 
+---
+中間的client跟右邊的client在聊天，左邊的client向右邊的client發起邀請就被server拒絕了
+![client2](./Images/client2.png)
 
+---
+server紀錄了每個client的動作
+![server](./Images/server.png)
+
+---
 
 心得
 ===
